@@ -5,7 +5,7 @@ import requests
 import requests_mock
 
 from page_loader import download
-from page_loader.loader import make_file_name_from_url
+from page_loader.loader import make_resource_path
 
 
 @pytest.fixture(scope='module')
@@ -14,13 +14,10 @@ def out_dir():
 
 def test_loader(out_dir, requests_mock):
     url = 'https://ru.hexlet.io/courses'
-    expected_name = make_file_name_from_url(url)
-    out_dir_name = out_dir.name
-
     requests_mock.register_uri('GET', url, text='resp')
 
-    actual = download(url, out_dir_name)
-    expected = os.path.join(out_dir_name, expected_name)
+    expected = make_resource_path(url, out_dir.name, '.html')
+    actual = download(url, out_dir.name)
 
     assert requests.get(url).text == 'resp'
     assert expected == actual

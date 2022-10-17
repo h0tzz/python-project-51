@@ -1,32 +1,44 @@
 import os
-import re
 import requests
+import urllib.request
 
-from urllib.parse import urlparse
-
-
-def write(file_path, content):
-    with open(file_path, 'w') as f:
-        f.write(content)
+from bs4 import BeautifulSoup
+from page_loader.helpers import (make_download_name, make_download_path,
+                                 is_local_resource, write, read)
 
 
-def strip_scheme(url):
-    parsed = urlparse(url)
-    scheme = "%s://" % parsed.scheme
-    return parsed.geturl().replace(scheme, '', 1)
+def download_file(url, dir):
+    r = requests.get(url)
+    write(dir, r.text)
 
 
-def make_file_name_from_url(url):
-    parsed_url = strip_scheme(url)
-    url_without_ext = os.path.splitext(parsed_url)[0]
-    result_url = re.sub(r'[^\da-zA-Z]', '-', url_without_ext)
-    file_name = f'{result_url}.html'
-    return file_name
+def download_local_files(url, main_file_path, output_dir):
+    files_dir = make_download_path(
+        output_dir,
+        make_download_name(url, '_files')
+    )
+    os.mkdir(files_dir)
+
+    html_doc = read(main_file_path)
+    soup = BeautifulSoup(html_doc, 'html.parser')
+
+    for img in soup.find_all('img'):
+        source = img.get('src')
+        if is_local_resource(source, url):
+            file_ext = source.split('.')[-1]
+            file_name = make_download_name(source, f'.{file_ext}')
+            file_path = make_download_path(files_dir, file_name)
+            urllib.request.urlretrieve(source, file_path)
+            img['src'] = file_path
+
+    write(main_file_path, soup.prettify())
 
 
 def download(url, output_dir):
-    file_name = make_file_name_from_url(url)
-    file_path = os.path.join(output_dir, file_name)
-    r = requests.get(url)
-    write(file_path, r.text)
-    return file_path
+    main_file_name = make_download_name(url)
+    main_file_path = make_download_path(output_dir, main_file_name)
+
+    download_file(url, main_file_path)
+    download_local_files(url, main_file_path, output_dir)
+
+    return main_file_path
