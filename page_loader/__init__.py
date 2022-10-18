@@ -1,4 +1,3 @@
-from page_loader.loader import download
+# -*- coding: utf-8 -*-
 
-
-__all__ = ('download', )
+"""Page loader package."""
