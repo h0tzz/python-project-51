@@ -19,7 +19,7 @@ def prepare_assets(base_url, page, dir_path):
         resource_path = os.path.join(dir_name, to_file_name(link))
         element[tag] = resource_path
         resources.append((link, os.path.join(dir_path, resource_path)))
-    return resources, soup.prettify(formatter='html5')
+    return resources, soup.prettify()
 
 
 def is_local(element, base_url):
