@@ -21,15 +21,25 @@ def download_local_files(url, main_file_path, output_dir):
 
     html_doc = read(main_file_path)
     soup = BeautifulSoup(html_doc, 'html.parser')
+    files = soup.find_all('img') + soup.find_all('script', {"src": True})
+    links = soup.find_all('link')
 
-    for img in soup.find_all('img'):
-        source = img.get('src')
-        if is_local_resource(source, url):
+    for file in files:
+        source = file.get('src')
+        if is_local_resource(url, source):
             file_ext = source.split('.')[-1]
             file_name = make_download_name(source, f'.{file_ext}')
             file_path = make_download_path(files_dir, file_name)
             urllib.request.urlretrieve(source, file_path)
-            img['src'] = file_path
+            file['src'] = file_path
+
+    for link in links:
+        source = link.get('href')
+        if is_local_resource(source, url):
+            file_name = make_download_name(source)
+            file_path = make_download_path(files_dir, file_name)
+            urllib.request.urlretrieve(source, file_path)
+            link['href'] = file_path
 
     write(main_file_path, soup.prettify())
 

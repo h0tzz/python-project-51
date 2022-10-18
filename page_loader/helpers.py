@@ -15,11 +15,6 @@ def read(file_path):
     return result
 
 
-def extract_root_domain(url):
-    t = urlparse(url).netloc
-    return '.'.join(t.split('.')[-2:])
-
-
 def strip_scheme(url):
     parsed = urlparse(url)
     scheme = "%s://" % parsed.scheme
@@ -38,6 +33,7 @@ def make_download_path(root_dir, sub_dir_or_file):
 
 
 def is_local_resource(main_url, src):
-    main_url_root_domain = extract_root_domain(main_url)
-    src_root_domain = extract_root_domain(src)
-    return main_url_root_domain == src_root_domain
+    main_domain = urlparse(main_url).netloc
+    source_domain = urlparse(src).netloc
+
+    return main_domain == source_domain or not source_domain
