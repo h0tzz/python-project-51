@@ -1,20 +1,31 @@
-"""Инициалиация и парсинг командно строки."""
+# -*- coding: utf-8 -*-
+
+"""Page loader CLI parser."""
+
 import argparse
 
+from page_loader import logging
 
-def parse_args():
-    """
-    Создание парсера параметров.
 
-    :return: возвращает созданный парсер.
+def make_parser():
+    """Create CLI argument parser.
+
+    Returns:
+        argparse.ArgumentParser
     """
-    parser = argparse.ArgumentParser(description='Загрузчик страниц.')
-    parser.add_argument('page')
+    parser = argparse.ArgumentParser(description='Page loader')
+    parser.add_argument('url', type=str)
     parser.add_argument(
         '-o',
         '--output',
-        default='',
-        help='Директория для сохранения файлов',
+        type=str,
+        help='set output directory',
     )
-
-    return parser.parse_args()
+    parser.add_argument(
+        '-l',
+        '--log-level',
+        choices=logging.LEVELS,
+        default=logging.INFO,
+        help='set log level',
+    )
+    return parser
