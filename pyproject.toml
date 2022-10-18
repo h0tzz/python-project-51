@@ -4,11 +4,11 @@ version = "0.1.0"
 description = ""
 authors = ["Ilya Malashenko <ilya.malashenko.developer@gmail.com>"]
 packages = [
-{ include = "page_loader" },
+    { include = "page_loader" },
 ]
 
 [tool.poetry.scripts]
-loader = "page_loader.scripts.page_loader:main"
+loader = "page_loader.scripts.run:main"
 
 [tool.poetry.dependencies]
 python = "^3.10"
@@ -21,6 +21,7 @@ flake8 = "^5.0.4"
 pytest = "^7.1.3"
 pytest-cov = "^4.0.0"
 requests-mock = "^1.10.0"
+coverage = "^6.3.1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

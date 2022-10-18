@@ -1,4 +1,8 @@
-from page_loader.downloader import download
+"""
+Утилита командной строки для скачивания сайтов.
 
+Скачивает либо в текущую директорию, либо в указанную
+через параметр '-о' или '--output'.
+"""
 
-__all__ = ('download', )
+from page_loader.download import download
