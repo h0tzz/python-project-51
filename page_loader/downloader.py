@@ -30,7 +30,7 @@ def download(output, url):
         resources_dir_name,
     )
 
-    save(html_file_path, soup.prettify(formatter='html5'))
+    save(html_file_path, soup.prettify(formatter='minimal'))
     if resources:
         download_resources(
             resources,
